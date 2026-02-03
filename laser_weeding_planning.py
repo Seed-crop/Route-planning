@@ -199,6 +199,7 @@ class PathPlanner:
         while remaining:
             best_idx = None
             best_urgency = float('inf')
+            best_move_time = 0
             
             for idx in remaining:
                 weed = weeds[idx]
@@ -223,6 +224,7 @@ class PathPlanner:
                 if urgency < best_urgency:
                     best_urgency = urgency
                     best_idx = idx
+                    best_move_time = move_time
             
             if best_idx is None:
                 break  # 无法找到满足约束的杂草
@@ -232,8 +234,7 @@ class PathPlanner:
             
             # 更新位置和时间
             position = weeds[best_idx].get_center()
-            time += (galvo_config.calculate_movement_time(position, weeds[best_idx].get_center()) +
-                    self.config.laser_treatment_time)
+            time += best_move_time + self.config.laser_treatment_time
         
         return plan
     
